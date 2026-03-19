@@ -1,297 +1,326 @@
-# 🌲 Timber Man — C++ Game Project
+# 🌲 Timber Man — C++ / SFML Arcade Game
 
-A fun arcade-style **tree chopping game** built using **C++** and the **SFML graphics library** 🎮
-This project is part of our **academic curriculum** and focuses on game logic, graphics rendering, event handling, and real-time user interaction.
+A fast-paced **arcade-style tree chopping game** built using **C++** and the **SFML multimedia library** 🎮.  
+This project demonstrates real-time rendering, input handling, animation systems, sound integration, and gameplay logic.
 
-> **Objective**
->
-> * Cut the tree 🌳
-> * Avoid the branches ❌
-> * Survive as long as you can ⏱️
-> * Simple rules. Addictive gameplay. Pure fun.
-
-⚠️ **Project Status:**
-This game is **under active development** as part of learning and academic practice.
+This game is developed as part of an **academic learning project** to practice **game programming, system design, and multimedia development using C++**.
 
 ---
 
-## 🎮 Game Concept
+# 🎮 Game Objective
 
-The player stands beside a tree and chops it while avoiding falling branches.
-The game challenges the player with:
+The player stands beside a tree and chops it repeatedly while avoiding falling branches.
 
-* Time pressure ⏳
-* Random branch generation 🌲
-* Moving obstacles (bee animation) 🐝
-* Environmental animations (cloud system ☁️)
-* Reaction-based controls 🎮
+Your goal is to:
 
-**Goal**:
-Chop the tree repeatedly → score points → survive longer.
+• Chop the tree 🌳  
+• Avoid getting crushed by branches ❌  
+• Beat the timer ⏱️  
+• Score as many points as possible 🎯  
 
 ---
 
-## 🚀 Features
+# 🚀 Features
 
-* Real-time gameplay
-* Keyboard-based controls
-* Animated graphics 🖼️
-* Score system
-* Time pressure system
-* Branch randomization system
-* Bee obstacle system 🐝
-* Cloud animation system ☁️
-* RIP stone death indicator 🪦
-* Smooth rendering using SFML
+## 🎮 Gameplay Systems
+• Real-time gameplay loop  
+• Score tracking system  
+• Random branch generation  
+• Time pressure system  
 
----
+## 🌍 Environment & Animation
+• Animated cloud system (3 independent clouds) ☁️  
+• Moving bee obstacle 🐝  
+• Log launch animation when chopping 🪵  
 
-## 🧠 Core Gameplay Mechanics
+## 🔊 Game Feedback (NEW)
+• Chop sound effect  
+• Death sound effect  
+• Out-of-time sound effect  
+• Visual death indicator (RIP stone) 🪦  
 
-| System          | Description                               |
-| --------------- | ----------------------------------------- |
-| Branch System   | Randomized branches fall from the tree    |
-| Time System     | Countdown timer with shrinking time bar   |
-| Player System   | Player moves left/right and chops         |
-| Obstacle System | Bee moves dynamically across the screen   |
-| Environment     | Animated clouds system                    |
-| Death System    | RIP stone appears when player is squished |
-| Scoring System  | Score increases on successful chops       |
-| Input System    | Input gating using acceptInput logic      |
-| State System    | paused / running game states              |
+## 🎹 Controls & Input
+• Keyboard-based player control  
+• Input gating system (`acceptInput`) to prevent spam  
 
 ---
 
-## 🎯 Controls
+# 🎯 Controls
 
-| Key             | Action               |
-| --------------- | -------------------- |
-| **Enter**       | Start / Restart game |
-| **Left Arrow**  | Move left & chop     |
-| **Right Arrow** | Move right & chop    |
-| **Escape**      | Exit game            |
-
----
-
-## 🧱 Technical Architecture
-
-The game follows a **structured procedural game architecture**:
-
-* Central game loop
-* Delta-time based movement
-* Event-driven input system
-* Sprite-based rendering
-* State-based logic (paused / running / dead)
-* Modular systems (branches, clouds, bee, UI)
-* Input gating system
-* Real-time animation systems
+| Key | Action |
+|-----|------|
+| **Enter** | Start / Restart Game |
+| **Left Arrow** | Move left & chop |
+| **Right Arrow** | Move right & chop |
+| **Close Window** | Exit game |
 
 ---
 
-## 🗂 Project Structure
+# 🧱 Technical Architecture
 
-```text
+The project follows a **procedural real-time game architecture**:
+
+• Central game loop  
+• Delta-time based movement  
+• Event-driven input handling  
+• Sprite-based rendering  
+• State-based logic (paused / running / dead)  
+• Modular gameplay systems  
+• Real-time animation systems  
+
+---
+
+# 🗂 Project Structure
+
+```
 TimberMan/
 │
-├── fonts/          # Font files used in the game
-├── graphics/       # Images & sprites
-├── sounds/         # Sound effects (planned)
+├── graphics/        # Sprites and textures
+├── font/            # Font files
+├── sound/           # Sound effects (chop, death, timeout)
 │
-├── Timber.cpp      # Main source code
-├── Timber.exe      # Executable file
-└── README.md       # Project documentation
+├── Timber.cpp       # Main game source code
+└── README.md        # Documentation
 ```
 
 ---
 
-## ⚙️ How to Compile & Run
+# ⚙️ Build & Run
 
-### 🛠️ Compile and Execute (Terminal)
+### 🛠 Compile
 
-```bash
-g++ Timber.cpp -o Timber -lsfml-graphics -lsfml-window -lsfml-system && ./Timber
+```
+g++ Timber.cpp -o Timber -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 ```
 
-### ▶️ Direct Execution
+### ▶ Run
 
-```bash
-Timber.exe
+```
+./Timber
 ```
 
 ---
 
-## 🧩 Code System Breakdown
+# 🧩 Code System Breakdown
 
-### 1️⃣ Branch System
+## 1️⃣ Branch System 🌲
 
-* Fixed-size branch array
-* Position shifting logic
-* Random generation using seeded randomness
-* Side-based collision logic
+```cpp
+const int NUM_BRANCHES = 6;
+enum class Side { LEFT, RIGHT, NONE };
+```
 
-Function:
+### Logic
+• Branch positions shift downward each chop  
+• New branches spawn randomly  
+• Branches appear on LEFT / RIGHT / NONE  
 
+### Function
 ```cpp
 void updateBranches(int seed)
 ```
 
-Purpose:
+---
 
-* Shift branches downward
-* Generate new random branch
-* Control randomness
+## 2️⃣ Time System ⏱️
+
+### Components
+• `Clock`  
+• `dt (delta time)`  
+• `timeRemaining`  
+• `timeBarWidthPerSecond`  
+
+### Functionality
+• Timer decreases continuously  
+• Time bar shrinks visually  
+• Game pauses at zero  
+• Sound plays when time runs out  
 
 ---
 
-### 2️⃣ Time System
+## 3️⃣ Player System 🎮
 
-* Delta-time based countdown
-* Shrinking time bar
-* Automatic pause on zero time
-* Visual feedback system
+### Features
+• Left/Right movement  
+• Axe alignment  
+• Score increment on chop  
+• Time bonus per chop  
 
----
+### Input System
+```cpp
+bool acceptInput;
+```
 
-### 3️⃣ Player System
-
-* Sprite-based movement
-* Left/Right positioning
-* Axe alignment system
-* Side-based logic
-* Input gating system
+Prevents multiple inputs per frame.
 
 ---
 
-### 4️⃣ Bee Obstacle System 🐝
+## 4️⃣ Log Animation System 🪵 (NEW)
 
-* Random speed generation
-* Random height generation
-* Screen traversal
-* Respawn logic
-* Continuous animation
+### Features
+• Log launches on every chop  
+• Direction based on player side  
+• Uses velocity (X & Y movement)  
+• Resets after leaving screen  
 
----
-
-### 5️⃣ Cloud Animation System ☁️
-
-* Multi-cloud system
-* Independent cloud speeds
-* Random height generation
-* Looping animation
-* Environmental depth effect
+### Variables
+```cpp
+bool logActive;
+float logSpeedX;
+float logSpeedY;
+```
 
 ---
 
-### 6️⃣ Death System 🪦
+## 5️⃣ Bee Obstacle System 🐝
 
-* Branch collision detection
-* Player squish detection
-* RIP stone sprite rendering
-* Death state activation
-* Visual feedback system
+### Features
+• Random speed  
+• Random height spawn  
+• Moves across screen  
+• Respawns automatically  
 
 ---
 
-### 7️⃣ Game State System
+## 6️⃣ Cloud System ☁️
+
+### Features
+• 3 independent clouds  
+• Random speeds  
+• Random spawn heights  
+• Continuous looping animation  
+
+---
+
+## 7️⃣ Sound System 🔊 (NEW)
+
+### Sounds Used
+
+| Sound | Trigger |
+|------|--------|
+| `chop.wav` | When player chops |
+| `death.wav` | When player dies |
+| `out_of_time.wav` | When timer ends |
+
+### Implementation
+```cpp
+SoundBuffer
+Sound
+```
+
+---
+
+## 8️⃣ Death System 🪦
+
+### Trigger
+• Branch collision with player side  
+
+### Effects
+• Player disappears  
+• RIP gravestone appears  
+• Game pauses  
+• Death sound plays  
+• "SQUISHED!!" message displayed  
+
+---
+
+## 9️⃣ Game State System
 
 ```cpp
-bool paused = true;
+bool paused;
+bool acceptInput;
 ```
 
 Handles:
-
-* Start screen
-* Pause logic
-* Death state
-* Input blocking
-* UI message system
+• Start / restart  
+• Pause logic  
+• Death state  
+• Input blocking  
 
 ---
 
-### 8️⃣ UI System
+## 🔟 UI System
 
-* Score rendering
-* Message rendering
-* Centered text system
-* Font management
-* Dynamic UI updates
+### Components
+• Score text  
+• Message text  
+• Timer bar  
 
----
-
-## 🎯 Learning Outcomes
-
-* Game loop implementation
-* Real-time systems design
-* Event handling
-* Asset management
-* Modular game logic
-* Animation systems
-* State management
-* Input systems
-* Time-based physics
-* Structured C++ architecture
+### Features
+• Real-time score updates  
+• Centered messages  
+• Dynamic time bar  
 
 ---
 
-## 📚 Academic Purpose
+# 🎯 Learning Outcomes
 
-This project was developed as part of our academic curriculum to strengthen:
-
-* C++ programming concepts
-* Game development fundamentals
-* Library integration
-* Real-world project structuring
-* Software architecture
-* Interactive system design
-
----
-
-## 🧑‍💻 Author
-
-**Developed by:** Uttam Patnaik
-**Course:** Academic Project
-**Domain:** Game Development / C++
+• Game loop architecture  
+• Real-time rendering  
+• Delta-time mechanics  
+• Sprite animation systems  
+• Input management  
+• Procedural randomness  
+• Audio integration (NEW)  
+• Event-driven programming  
+• Game state management  
 
 ---
 
-## ⚠️ Limitations
+# 📚 Academic Purpose
 
-* No physics-based branch falling
-* No true collision physics
-* No audio system yet
-* No menu system
-* No save system
-* No difficulty scaling
-* No animations for death
+This project was developed to practice:
 
----
-
-## 🔮 Planned Improvements
-
-* Physics-based falling branches
-* Player death animation
-* Game over screen
-* Restart button
-* Sound effects
-* Background music
-* Difficulty scaling
-* Progressive speed system
-* UI animations
-* Menu system
-* Pause menu
-* Settings menu
-* Score persistence
-* High-score system
+• C++ programming  
+• Multimedia integration (SFML)  
+• Game development fundamentals  
+• Real-time system design  
+• Modular architecture  
 
 ---
 
-## 📌 Version & Status
+# ⚠️ Current Limitations
 
-**Version:** 0.5-alpha
-**Build Type:** Development
-**Stage:** Prototype+
-**Stability:** Experimental
+• No advanced physics system  
+• No menu UI  
+• No difficulty scaling  
+• No high score saving system  
+• No background music  
+• No animation transitions  
 
 ---
 
-🌲 **Timber Man — Chop. Dodge. Survive. Learn. Repeat.** 🎮
+# 🔮 Planned Improvements
+
+• High score system 💾  
+• Difficulty scaling  
+• Background music  
+• Particle effects  
+• UI animations  
+• Menu system  
+• Pause menu  
+• Settings menu  
+
+---
+
+# 🧑‍💻 Author
+
+**Developer:** Uttam Patnaik  
+**Project Type:** Academic Game Project  
+**Language:** C++  
+**Library:** SFML  
+
+---
+
+# 📌 Version Information
+
+**Version:** 0.6-alpha  
+**Build Type:** Development  
+**Stage:** Prototype+  
+**Stability:** Experimental  
+
+---
+
+# 🌲 Timber Man
+
+**Chop. Dodge. Survive. Improve. Repeat.** 🎮
